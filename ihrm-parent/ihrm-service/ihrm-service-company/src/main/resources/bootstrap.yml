@@ -1,0 +1,32 @@
+server:
+  port: 57010
+spring:
+  application:
+    name: service-company
+  cloud:
+    nacos:
+      discovery:
+        namespace: b36ded08-caa6-408a-9eee-cc50698693be
+        server-addr: 127.0.0.1:8848
+      config:
+        namespace: b36ded08-caa6-408a-9eee-cc50698693be
+        server-addr: 127.0.0.1:8848
+        group: IHRM_GROUP
+        file-extension: yaml
+        #扩展配置
+        ext-config:
+        -
+          data-id: spring-boot-http.yaml
+          group: COMMOM_GROUP
+          refresh: true
+        -
+          data-id: spring-boot-jpa.yaml
+          roup: COMMOM_GROUP
+          refresh: true
+        -
+          data-id: spring-boot-starter-druid.yaml
+          group: COMMOM_GROUP
+          refresh: true
+
+
+
