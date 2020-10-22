@@ -4,10 +4,13 @@ import cn.lx.ihrm.common.domain.company.Company;
 import cn.lx.ihrm.common.entity.IdWorker;
 import cn.lx.ihrm.common.entity.ResultCode;
 import cn.lx.ihrm.common.exception.CommonException;
+import cn.lx.ihrm.common.utils.BeanWrapperUtil;
 import cn.lx.ihrm.company.dao.CompanyDao;
 import cn.lx.ihrm.company.service.ICompanyService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 import java.util.Date;
 import java.util.List;
@@ -82,9 +85,13 @@ public class CompanyServiceImpl implements ICompanyService {
         if (null==queryCompany){
             throw new CommonException(ResultCode.E20001);
         }
-        company.setId(id);
-        //目前还不知道这里是不是有选择性的更新数据
-       return companyDao.save(company);
+
+        //获取对象中属性值为null的属性名集合
+        String[] result = BeanWrapperUtil.getNullFieldNames(company);
+        //拷贝company中不为null的属性值到queryCompany
+        BeanUtils.copyProperties(company,queryCompany,result);
+
+        return companyDao.save(queryCompany);
     }
 
     /**

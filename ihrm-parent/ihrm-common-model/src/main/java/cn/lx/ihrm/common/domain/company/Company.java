@@ -1,9 +1,12 @@
 package cn.lx.ihrm.common.domain.company;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -13,38 +16,41 @@ import java.util.Date;
 
 /**
  * 实体类代码：
- *  属性
- *  构造方法
- *  getter，setter方法
- *
+ * 属性
+ * 构造方法
+ * getter，setter方法
+ * <p>
  * lombok 插件 : 使用注解的形式替换getter setter，构造方法
- *      如何使用插件
- *          1.安装插件（在工程中引入响应的插件坐标即可）
- *                  <dependency>
-                        <groupId>org.projectlombok</groupId>
-                        <artifactId>lombok</artifactId>
-                        <version>1.16.16</version>
-                    </dependency>
- *          2.使用注解配置
- *                 配置到实体类上
- *                 @setter      : setter方法
- *                 @getter      ：getter方法
- *                 @NoArgsConstructor   无参构造
- *                 @AllArgsConstructor  满参构造
- *                 @Data        : setter,getter,构造方法
+ * 如何使用插件
+ * 1.安装插件（在工程中引入响应的插件坐标即可）
+ * <dependency>
+ * <groupId>org.projectlombok</groupId>
+ * <artifactId>lombok</artifactId>
+ * <version>1.16.16</version>
+ * </dependency>
+ * 2.使用注解配置
+ * 配置到实体类上
  *
+ * @setter : setter方法
+ * @getter ：getter方法
+ * @NoArgsConstructor 无参构造
+ * @AllArgsConstructor 满参构造
+ * @Data : setter,getter,构造方法
+ * <p>
  * 使用jpa操作数据
- *      配置实体类和数据库表的映射关系：jpa注解
- *      1.实体类和表的映射关系
- *      2.字段和属性的映射关系
- *          i。主键属性的映射
- *          ii。普通属性的映射
+ * 配置实体类和数据库表的映射关系：jpa注解
+ * 1.实体类和表的映射关系
+ * 2.字段和属性的映射关系
+ * i。主键属性的映射
+ * ii。普通属性的映射
  */
 @Entity
 @Table(name = "co_company")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert
+@DynamicUpdate
 public class Company implements Serializable {
     private static final long serialVersionUID = 594829320797158219L;
     //ID
@@ -65,10 +71,12 @@ public class Company implements Serializable {
     /**
      * 续期时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date renewalDate;
     /**
      * 到期时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date expirationDate;
     /**
      * 公司地区
@@ -121,5 +129,6 @@ public class Company implements Serializable {
     /**
      * 创建时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
 }
