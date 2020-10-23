@@ -1,5 +1,6 @@
 package cn.lx.ihrm.company.controller;
 
+import cn.lx.ihrm.common.controller.BaseController;
 import cn.lx.ihrm.common.domain.company.Company;
 import cn.lx.ihrm.common.entity.Result;
 import cn.lx.ihrm.common.entity.ResultCode;
@@ -18,7 +19,7 @@ import java.util.List;
 @RestController
 @CrossOrigin
 @RequestMapping("/company")
-public class CompanyController {
+public class CompanyController extends BaseController {
 
     @Autowired
     private ICompanyService iCompanyService;

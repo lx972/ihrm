@@ -12,7 +12,8 @@
     <artifactId>ihrm-service</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>ihrm-service-company</module>
+        <module>ihrm-service-admin</module>
+        <module>ihrm-service-system</module>
     </modules>
 
     <dependencies>
