@@ -2,6 +2,7 @@ package cn.lx.ihrm.system.controller;
 
 import cn.lx.ihrm.common.controller.BaseController;
 import cn.lx.ihrm.common.domain.system.User;
+import cn.lx.ihrm.common.domain.system.vo.AssignRolesVO;
 import cn.lx.ihrm.common.entity.PageResult;
 import cn.lx.ihrm.common.entity.Result;
 import cn.lx.ihrm.common.entity.ResultCode;
@@ -10,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * cn.lx.ihrm.user.controller
@@ -26,6 +27,19 @@ public class UserController extends BaseController {
 
     @Autowired
     private IUserService iUserService;
+
+    @PutMapping(value = "/role/{userId}")
+    public Result assignRoles(@PathVariable("userId") String userId,
+                              @RequestBody AssignRolesVO assignRolesVO) {
+      iUserService.assignRoles(userId, assignRolesVO);
+        return new Result(ResultCode.SUCCESS);
+    }
+
+    @GetMapping(value = "/role/{userId}")
+    public Result getUserRoles(@PathVariable("userId") String userId) {
+        Set<String> roleIds = iUserService.getUserRoles(userId);
+        return new Result(ResultCode.SUCCESS,roleIds);
+    }
 
     @GetMapping(value = "")
     public Result findAll(@RequestParam Map<String,String> queryMap, int page, int size) {

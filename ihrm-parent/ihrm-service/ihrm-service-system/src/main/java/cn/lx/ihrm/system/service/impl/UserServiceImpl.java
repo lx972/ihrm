@@ -1,12 +1,17 @@
 package cn.lx.ihrm.system.service.impl;
 
+import cn.lx.ihrm.common.domain.system.Role;
 import cn.lx.ihrm.common.domain.system.User;
+import cn.lx.ihrm.common.domain.system.vo.AssignRolesVO;
 import cn.lx.ihrm.common.entity.IdWorker;
 import cn.lx.ihrm.common.entity.ResultCode;
 import cn.lx.ihrm.common.exception.CommonException;
 import cn.lx.ihrm.common.utils.BeanWrapperUtil;
+import cn.lx.ihrm.system.dao.RoleDao;
 import cn.lx.ihrm.system.dao.UserDao;
 import cn.lx.ihrm.system.service.IUserService;
+import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,10 +24,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * cn.lx.ihrm.user.service.impl
@@ -31,6 +33,7 @@ import java.util.Map;
  * @date 15:57
  */
 @Service
+@Slf4j
 public class UserServiceImpl implements IUserService {
 
     @Autowired
@@ -38,6 +41,10 @@ public class UserServiceImpl implements IUserService {
 
     @Autowired
     private IdWorker idWorker;
+
+    @Autowired
+    private RoleDao roleDao;
+
 
     /**
      * 查询所有
@@ -145,5 +152,41 @@ public class UserServiceImpl implements IUserService {
     @Override
     public void deleteById(String id) {
         userDao.deleteById(id);
+    }
+
+    /**
+     * 分配角色
+     *  @param userId
+     * @param roleIds
+     */
+    @Override
+    public void assignRoles(String userId, AssignRolesVO roleIds) {
+        User user = userDao.findById(userId).get();
+        Set<Role> roles=new HashSet<>();
+        for (String roleId : roleIds.getRoleIds()) {
+            Role role = roleDao.findById(roleId).get();
+            roles.add(role);
+        }
+        user.setRoles(roles);
+        userDao.save(user);
+    }
+
+    /**
+     * 获取userId拥有的角色
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public Set<String> getUserRoles(String userId) {
+        User user = userDao.findById(userId).get();
+        Set<Role> roles = user.getRoles();
+        log.info("roles:{}", JSON.toJSONString(roles));
+        Set<String> roleIds =new HashSet<>();
+        for (Role role : roles) {
+            roleIds.add(role.getId());
+        }
+        log.info("roles:{}", JSON.toJSONString(roleIds));
+        return roleIds;
     }
 }

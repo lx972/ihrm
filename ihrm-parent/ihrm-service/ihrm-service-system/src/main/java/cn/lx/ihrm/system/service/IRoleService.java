@@ -16,8 +16,9 @@ public interface IRoleService {
      * 查询所有
      *
      * @return
+     * @param companyId
      */
-    List<Role> findAll();
+    List<Role> findAll(String companyId);
 
     /**
      * 根据ID查询
