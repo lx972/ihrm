@@ -95,6 +95,16 @@ public class User implements Serializable {
     private String departmentName;
 
 
+    /**
+     * @ManyToMany  表示用户和角色的关系是多对多
+     * @JoinTable   描述了多对多关系的数据表关系
+     * name="pe_user_role" 表示用户角色关联表的名字是pe_user_role
+     * joinColumns={}   表示用户与关联表的关系
+     * @JoinColumn(name="user_id",  name是关联表中的字段名
+     * referencedColumnName="id")    referencedColumnName是用户表中的字段名
+     * inverseJoinColumns={}  表示角色与关联表的关系
+     * 后面就差不多了
+     */
     @ManyToMany
     @JsonIgnore
     @JoinTable(name="pe_user_role",joinColumns={@JoinColumn(name="user_id",referencedColumnName="id")},

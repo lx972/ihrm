@@ -30,11 +30,18 @@ public class Role implements Serializable {
      */
     private String companyId;
 
+    /**
+     * @ManyToMany(mappedBy="roles")    角色与用户关系多对多
+     * mappedBy="roles" mappedBy属性定义了此类为双向关系的维护端，角色维护用户
+     */
     @JsonIgnore
     @ManyToMany(mappedBy="roles")
     private Set<User> users = new HashSet<User>(0);//角色与用户   多对多
 
 
+    /**
+     * 角色和权限之间的关系，大同小异
+     */
     @JsonIgnore
     @ManyToMany
     @JoinTable(name="pe_role_permission",
