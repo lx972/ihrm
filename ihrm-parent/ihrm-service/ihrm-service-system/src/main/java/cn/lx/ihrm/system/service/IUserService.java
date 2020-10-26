@@ -1,9 +1,9 @@
 package cn.lx.ihrm.system.service;
 
 import cn.lx.ihrm.common.domain.system.User;
-import cn.lx.ihrm.common.domain.system.vo.AssignRolesVO;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -61,7 +61,7 @@ public interface IUserService {
      * @param userId
      * @param roleIds
      */
-    void assignRoles(String userId, AssignRolesVO roleIds);
+    void assignRoles(String userId, List<String> roleIds);
 
     /**
      * 获取userId拥有的角色

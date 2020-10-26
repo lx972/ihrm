@@ -48,4 +48,10 @@ public class Role implements Serializable {
             joinColumns={@JoinColumn(name="role_id",referencedColumnName="id")},
             inverseJoinColumns={@JoinColumn(name="permission_id",referencedColumnName="id")})
     private Set<Permission> permissions = new HashSet<Permission>(0);//角色与模块  多对多
+
+    /**
+     * 用户拥有的权限id
+     */
+    @Transient
+    private Set<String> permIds = new HashSet<String>(0);
 }

@@ -6,9 +6,11 @@ import cn.lx.ihrm.common.domain.system.vo.AssignRolesVO;
 import cn.lx.ihrm.common.entity.PageResult;
 import cn.lx.ihrm.common.entity.Result;
 import cn.lx.ihrm.common.entity.ResultCode;
+import cn.lx.ihrm.common.exception.CommonException;
 import cn.lx.ihrm.system.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -31,7 +33,10 @@ public class UserController extends BaseController {
     @PutMapping(value = "/role/{userId}")
     public Result assignRoles(@PathVariable("userId") String userId,
                               @RequestBody AssignRolesVO assignRolesVO) {
-      iUserService.assignRoles(userId, assignRolesVO);
+        if (StringUtils.isEmpty(userId)||assignRolesVO.getRoleIds().size()==0){
+            throw new CommonException(ResultCode.E30001);
+        }
+      iUserService.assignRoles(userId, assignRolesVO.getRoleIds());
         return new Result(ResultCode.SUCCESS);
     }
 

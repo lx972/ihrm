@@ -2,6 +2,7 @@ package cn.lx.ihrm.common.domain.system.vo;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,5 +14,5 @@ import java.util.List;
 @Data
 public class AssignRolesVO {
     private String userId;
-    private List<String> roleIds;
+    private List<String> roleIds=new ArrayList<>();
 }

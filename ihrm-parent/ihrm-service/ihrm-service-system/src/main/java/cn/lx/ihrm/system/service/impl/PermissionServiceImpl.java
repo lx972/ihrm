@@ -62,7 +62,10 @@ public class PermissionServiceImpl implements IPermissionService {
                 if (!StringUtils.isEmpty(permission.getPid())) {
                     predicates.add(criteriaBuilder.equal(root.get("pid").as(String.class), permission.getPid()));
                 }
-                return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+                if (!StringUtils.isEmpty(permission.getEnVisible())) {
+                    predicates.add(criteriaBuilder.equal(root.get("enVisible").as(Integer.class), permission.getEnVisible()));
+                }
+                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
         List<Permission> permissions = permissionDao.findAll(specification);

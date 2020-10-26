@@ -2,7 +2,6 @@ package cn.lx.ihrm.system.service.impl;
 
 import cn.lx.ihrm.common.domain.system.Role;
 import cn.lx.ihrm.common.domain.system.User;
-import cn.lx.ihrm.common.domain.system.vo.AssignRolesVO;
 import cn.lx.ihrm.common.entity.IdWorker;
 import cn.lx.ihrm.common.entity.ResultCode;
 import cn.lx.ihrm.common.exception.CommonException;
@@ -156,14 +155,14 @@ public class UserServiceImpl implements IUserService {
 
     /**
      * 分配角色
-     *  @param userId
+     * @param userId
      * @param roleIds
      */
     @Override
-    public void assignRoles(String userId, AssignRolesVO roleIds) {
+    public void assignRoles(String userId, List<String> roleIds) {
         User user = userDao.findById(userId).get();
         Set<Role> roles=new HashSet<>();
-        for (String roleId : roleIds.getRoleIds()) {
+        for (String roleId : roleIds) {
             Role role = roleDao.findById(roleId).get();
             roles.add(role);
         }

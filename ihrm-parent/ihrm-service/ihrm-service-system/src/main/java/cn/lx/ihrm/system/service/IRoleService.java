@@ -1,8 +1,9 @@
 package cn.lx.ihrm.system.service;
 
 import cn.lx.ihrm.common.domain.system.Role;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * cn.lx.ihrm.role.service
@@ -15,10 +16,12 @@ public interface IRoleService {
     /**
      * 查询所有
      *
-     * @return
      * @param companyId
+     * @param page
+     * @param size
+     * @return
      */
-    List<Role> findAll(String companyId);
+    Page<Role> findAll(String companyId, int page, int size);
 
     /**
      * 根据ID查询
@@ -38,7 +41,8 @@ public interface IRoleService {
 
     /**
      * 根据id修改数据
-     *  @param id
+     *
+     * @param id
      * @param role
      * @return
      */
@@ -50,4 +54,11 @@ public interface IRoleService {
      * @param id
      */
     void deleteById(String id);
+
+    /**
+     * 给角色分配权限
+     *  @param roleId
+     * @param permIds
+     */
+    void assignPrem(String roleId, Set<String> permIds);
 }

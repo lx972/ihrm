@@ -1,15 +1,19 @@
 package cn.lx.ihrm.system.service.impl;
 
+import cn.lx.ihrm.common.domain.system.Permission;
 import cn.lx.ihrm.common.domain.system.Role;
 import cn.lx.ihrm.common.entity.IdWorker;
 import cn.lx.ihrm.common.entity.ResultCode;
 import cn.lx.ihrm.common.exception.CommonException;
 import cn.lx.ihrm.common.utils.BeanWrapperUtil;
+import cn.lx.ihrm.system.dao.PermissionDao;
 import cn.lx.ihrm.system.dao.RoleDao;
 import cn.lx.ihrm.system.service.IRoleService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +21,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * cn.lx.ihrm.role.service.impl
@@ -34,14 +39,22 @@ public class RoleServiceImpl implements IRoleService {
     @Autowired
     private IdWorker idWorker;
 
+    @Autowired
+    private PermissionDao permissionDao;
+
+
     /**
      * 查询所有
      *
      * @param companyId
+     * @param page
+     * @param size
      * @return
      */
     @Override
-    public List<Role> findAll(String companyId) {
+    public Page<Role> findAll(String companyId, int page, int size) {
+        //page从0开始
+        PageRequest pageRequest = new PageRequest(page - 1, size);
         Specification<Role> specification = new Specification<Role>() {
             /**
              * Creates a WHERE clause for a query of the referenced entity in form of a {@link Predicate} for the given
@@ -57,8 +70,8 @@ public class RoleServiceImpl implements IRoleService {
                 return criteriaBuilder.equal(root.get("companyId").as(String.class), companyId);
             }
         };
-        List<Role> roles = roleDao.findAll(specification);
-        return roles;
+        Page<Role> rolePage = roleDao.findAll(specification, pageRequest);
+        return rolePage;
     }
 
 
@@ -70,7 +83,14 @@ public class RoleServiceImpl implements IRoleService {
      */
     @Override
     public Role findById(String id) {
-        return roleDao.findById(id).get();
+        Role role = roleDao.findById(id).get();
+        //封装用户拥有的权限id
+        Set<String> permIds = role.getPermIds();
+        for (Permission permission : role.getPermissions() ) {
+            permIds.add(permission.getId());
+        }
+        role.setPermIds(permIds);
+        return role;
     }
 
     /**
@@ -116,5 +136,24 @@ public class RoleServiceImpl implements IRoleService {
     @Override
     public void deleteById(String id) {
         roleDao.deleteById(id);
+    }
+
+    /**
+     * 给角色分配权限
+     *  @param roleId
+     * @param permIds
+     */
+    @Override
+    public void assignPrem(String roleId, Set<String> permIds) {
+        //根据id查询出原本的信息
+        Role role = roleDao.findById(roleId).get();
+        //查询出所有的权限，并封装
+        Set<Permission> permissions = new HashSet<>();
+        for (String permId : permIds) {
+            Permission permission = permissionDao.findById(permId).get();
+            permissions.add(permission);
+        }
+        role.setPermissions(permissions);
+        roleDao.save(role);
     }
 }
