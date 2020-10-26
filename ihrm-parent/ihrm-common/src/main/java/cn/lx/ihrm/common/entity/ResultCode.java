@@ -8,8 +8,11 @@ public enum ResultCode {
     UNAUTHENTICATED(false,10002,"您还未登录"),
     UNAUTHORISE(false,10003,"权限不足"),
     SERVER_ERROR(false,99999,"抱歉，系统繁忙，请稍后重试！"),
+    JWT_ERROR(false,88888,"令牌不正确！"),
 
     //---用户操作返回码----
+    E10001(false,10001,"用户名或密码不能为空"),
+    E10002(false,10002,"用户名或密码错误"),
     //---企业操作返回码----
     E20001(false,20001,"不存在此id对应的企业数据"),
     //---权限操作返回码----

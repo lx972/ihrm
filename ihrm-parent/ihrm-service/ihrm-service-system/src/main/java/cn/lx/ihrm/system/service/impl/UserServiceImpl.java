@@ -2,6 +2,7 @@ package cn.lx.ihrm.system.service.impl;
 
 import cn.lx.ihrm.common.domain.system.Role;
 import cn.lx.ihrm.common.domain.system.User;
+import cn.lx.ihrm.common.domain.system.response.ProfileResponse;
 import cn.lx.ihrm.common.entity.IdWorker;
 import cn.lx.ihrm.common.entity.ResultCode;
 import cn.lx.ihrm.common.exception.CommonException;
@@ -10,15 +11,21 @@ import cn.lx.ihrm.system.dao.RoleDao;
 import cn.lx.ihrm.system.dao.UserDao;
 import cn.lx.ihrm.system.service.IUserService;
 import com.alibaba.fastjson.JSON;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import javax.crypto.SecretKey;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -33,6 +40,7 @@ import java.util.*;
  */
 @Service
 @Slf4j
+@RefreshScope
 public class UserServiceImpl implements IUserService {
 
     @Autowired
@@ -44,6 +52,8 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private RoleDao roleDao;
 
+    @Value(value = "${jjwt.config.secretString}")
+    private String secretString;
 
     /**
      * 查询所有
@@ -188,4 +198,57 @@ public class UserServiceImpl implements IUserService {
         log.info("roles:{}", JSON.toJSONString(roleIds));
         return roleIds;
     }
+
+    /**
+     * 用户登录
+     *
+     * @param username
+     * @param password
+     * @param companyId
+     * @param companyName
+     * @return
+     */
+    @Override
+    public String login(String username, String password, String companyId, String companyName)throws CommonException {
+        User user = userDao.findUserByUsernameAndPassword(username, password);
+        if (user==null){
+            throw new CommonException(ResultCode.E10002);
+        }
+        //使用jjwt创建令牌
+        SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretString));
+        Map<String, Object> claims=new HashMap<>();
+        claims.put("userId",user.getId());
+        claims.put("companyId",companyId);
+        claims.put("companyName",companyName);
+        String jws =Jwts.builder()
+                //.setIssuer("me")
+                //.setSubject("Bob")
+                //.setAudience("you")
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*30)) //a java.util.Date
+                //.setNotBefore(notBefore) //a java.util.Date
+                //.setIssuedAt(new Date()) // for example, now
+                //.setId(UUID.randomUUID()) //just an example id
+                .signWith(secretKey)
+                .addClaims(claims)
+                .compact();
+        return jws;
+    }
+
+    /**
+     * 根据用户id查询出权限和用户信息并封装
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public ProfileResponse profile(String userId) {
+        User user = userDao.findById(userId).get();
+        if (user==null){
+            throw new CommonException(ResultCode.UNAUTHENTICATED);
+        }
+        ProfileResponse profileResponse = new ProfileResponse(user);
+        return profileResponse;
+    }
+
+
 }

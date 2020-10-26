@@ -28,5 +28,7 @@ spring:
           group: COMMOM_GROUP
           refresh: true
 
-
+jjwt:
+  config:
+    secretString: nz6K2p5Ylf884nlH0BN3D1KJsd6Cbwtpmcp4HBAjIaU=
 

@@ -14,4 +14,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @date 15:54
  */
 public interface UserDao extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
+
+    User findUserByUsernameAndPassword(String username, String password);
 }

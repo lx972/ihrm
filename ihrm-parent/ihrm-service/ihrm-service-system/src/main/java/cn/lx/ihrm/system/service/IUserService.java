@@ -1,6 +1,8 @@
 package cn.lx.ihrm.system.service;
 
 import cn.lx.ihrm.common.domain.system.User;
+import cn.lx.ihrm.common.domain.system.response.ProfileResponse;
+import cn.lx.ihrm.common.exception.CommonException;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -18,10 +20,10 @@ public interface IUserService {
     /**
      * 查询所有
      *
-     * @return
      * @param queryMap
      * @param page
      * @param size
+     * @return
      */
     Page<User> findAll(Map<String, String> queryMap, int page, int size);
 
@@ -43,7 +45,8 @@ public interface IUserService {
 
     /**
      * 根据id修改数据
-     *  @param id
+     *
+     * @param id
      * @param user
      * @return
      */
@@ -58,6 +61,7 @@ public interface IUserService {
 
     /**
      * 分配角色
+     *
      * @param userId
      * @param roleIds
      */
@@ -65,8 +69,27 @@ public interface IUserService {
 
     /**
      * 获取userId拥有的角色
+     *
      * @param userId
      * @return
      */
     Set<String> getUserRoles(String userId);
+
+    /**
+     * 用户登录
+     *
+     * @param username
+     * @param password
+     * @param companyId
+     * @param companyName
+     * @return
+     */
+    String login(String username, String password, String companyId, String companyName) throws CommonException;
+
+    /**
+     * 根据用户id查询出权限和用户信息并封装
+     * @param userId
+     * @return
+     */
+    ProfileResponse profile(String userId);
 }
