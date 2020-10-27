@@ -78,13 +78,13 @@ public interface IUserService {
     /**
      * 用户登录
      *
-     * @param username
+     * @param mobile
      * @param password
      * @param companyId
      * @param companyName
      * @return
      */
-    String login(String username, String password, String companyId, String companyName) throws CommonException;
+    String login(String mobile, String password, String companyId, String companyName) throws CommonException;
 
     /**
      * 根据用户id查询出权限和用户信息并封装

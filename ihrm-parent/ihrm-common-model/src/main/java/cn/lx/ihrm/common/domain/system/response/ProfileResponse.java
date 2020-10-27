@@ -6,10 +6,7 @@ import cn.lx.ihrm.common.domain.system.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * cn.lx.ihrm.common.domain.system.response
@@ -47,6 +44,34 @@ public class ProfileResponse {
                 }
             }
         }
+        rolesMap.put("menus", menus);
+        rolesMap.put("points", points);
+        rolesMap.put("apis", points);
+        this.roles = rolesMap;
+    }
+
+
+    public ProfileResponse(User user, List<Permission> permissions) {
+        this.mobile = user.getMobile();
+        this.username = user.getUsername();
+        this.company = user.getCompanyName();
+        //角色数据
+        Set<String> menus = new HashSet<>();
+        Set<String> points = new HashSet<>();
+        Set<String> apis = new HashSet<>();
+        Map rolesMap = new HashMap<>();
+
+        for (Permission perm : permissions) {
+            String code = perm.getCode();
+            if (perm.getType() == 1) {
+                menus.add(code);
+            } else if (perm.getType() == 2) {
+                points.add(code);
+            } else {
+                apis.add(code);
+            }
+        }
+
         rolesMap.put("menus", menus);
         rolesMap.put("points", points);
         rolesMap.put("apis", points);

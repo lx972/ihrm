@@ -1,5 +1,6 @@
 package cn.lx.ihrm.system.service.impl;
 
+import cn.lx.ihrm.common.domain.system.Permission;
 import cn.lx.ihrm.common.domain.system.Role;
 import cn.lx.ihrm.common.domain.system.User;
 import cn.lx.ihrm.common.domain.system.response.ProfileResponse;
@@ -7,8 +8,10 @@ import cn.lx.ihrm.common.entity.IdWorker;
 import cn.lx.ihrm.common.entity.ResultCode;
 import cn.lx.ihrm.common.exception.CommonException;
 import cn.lx.ihrm.common.utils.BeanWrapperUtil;
+import cn.lx.ihrm.system.dao.PermissionDao;
 import cn.lx.ihrm.system.dao.RoleDao;
 import cn.lx.ihrm.system.dao.UserDao;
+import cn.lx.ihrm.system.service.IPermissionService;
 import cn.lx.ihrm.system.service.IUserService;
 import com.alibaba.fastjson.JSON;
 import io.jsonwebtoken.Jwts;
@@ -54,6 +57,9 @@ public class UserServiceImpl implements IUserService {
 
     @Value(value = "${jjwt.config.secretString}")
     private String secretString;
+
+    @Autowired
+    private IPermissionService iPermissionService;
 
     /**
      * 查询所有
@@ -202,15 +208,15 @@ public class UserServiceImpl implements IUserService {
     /**
      * 用户登录
      *
-     * @param username
+     * @param mobile
      * @param password
      * @param companyId
      * @param companyName
      * @return
      */
     @Override
-    public String login(String username, String password, String companyId, String companyName)throws CommonException {
-        User user = userDao.findUserByUsernameAndPassword(username, password);
+    public String login(String mobile, String password, String companyId, String companyName)throws CommonException {
+        User user = userDao.findUserByMobileAndPassword(mobile, password);
         if (user==null){
             throw new CommonException(ResultCode.E10002);
         }
@@ -246,7 +252,21 @@ public class UserServiceImpl implements IUserService {
         if (user==null){
             throw new CommonException(ResultCode.UNAUTHENTICATED);
         }
-        ProfileResponse profileResponse = new ProfileResponse(user);
+        ProfileResponse profileResponse =null;
+        if ("saasAdmin".equals(user.getLevel())){
+            //获取所有权限
+            Permission permission = new Permission();
+            List<Permission> permissions = iPermissionService.findAll(permission);
+            profileResponse=new ProfileResponse(user,permissions);
+        }else if ("coAdmin".equals(user.getLevel())){
+            //获取企业可见的权限
+            Permission permission = new Permission();
+            permission.setEnVisible(1);
+            List<Permission> permissions = iPermissionService.findAll(permission);
+            profileResponse=new ProfileResponse(user,permissions);
+        }else if ("user".equals(user.getLevel())){
+            profileResponse=new ProfileResponse(user);
+        }
         return profileResponse;
     }
 

@@ -100,6 +100,8 @@ public class User implements Serializable {
 
     private String departmentName;
 
+    private String level;
+
 
     /**
      * @ManyToMany  表示用户和角色的关系是多对多

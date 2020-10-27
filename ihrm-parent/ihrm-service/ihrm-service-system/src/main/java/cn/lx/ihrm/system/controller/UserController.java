@@ -55,11 +55,11 @@ public class UserController extends BaseController {
 
     @PostMapping(value = "/login")
     public Result login(@RequestBody User user) {
-        if (user == null || StringUtils.isEmpty(user.getUsername())
+        if (user == null || StringUtils.isEmpty(user.getMobile())
                 || StringUtils.isEmpty(user.getPassword())) {
             throw new CommonException(ResultCode.E10001);
         }
-        String jws = iUserService.login(user.getUsername(), user.getPassword()
+        String jws = iUserService.login(user.getMobile(), user.getPassword()
                 , getCompanyId(), getCompanyName());
         return new Result(ResultCode.SUCCESS, jws);
     }
