@@ -7,6 +7,6 @@
     <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-service/ihrm-service-admin" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-service/ihrm-service-system" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-service/ihrm-service-uaa" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/shiro-test" charset="UTF-8" />
   </component>
 </project>

@@ -8,19 +8,17 @@ import cn.lx.ihrm.common.entity.IdWorker;
 import cn.lx.ihrm.common.entity.ResultCode;
 import cn.lx.ihrm.common.exception.CommonException;
 import cn.lx.ihrm.common.utils.BeanWrapperUtil;
-import cn.lx.ihrm.system.dao.PermissionDao;
 import cn.lx.ihrm.system.dao.RoleDao;
 import cn.lx.ihrm.system.dao.UserDao;
 import cn.lx.ihrm.system.service.IPermissionService;
 import cn.lx.ihrm.system.service.IUserService;
 import com.alibaba.fastjson.JSON;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.*;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,11 +26,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import javax.crypto.SecretKey;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -55,9 +53,6 @@ public class UserServiceImpl implements IUserService {
     @Autowired
     private RoleDao roleDao;
 
-    @Value(value = "${jjwt.config.secretString}")
-    private String secretString;
-
     @Autowired
     private IPermissionService iPermissionService;
 
@@ -70,7 +65,7 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public Page<User> findAll(Map<String, String> queryMap, int page, int size) {
+    public Page<User> findAll(Map<String, String> queryMap, int page, int size) throws CommonException {
         //page从0开始
         PageRequest pageRequest = new PageRequest(page - 1, size);
         Specification<User> specification = new Specification<User>() {
@@ -87,11 +82,11 @@ public class UserServiceImpl implements IUserService {
             public Predicate toPredicate(Root<User> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
                 //是否分配部门 1 分配， 0    未分配
-                if (!StringUtils.isEmpty(queryMap.get("hasDept"))&&
+                if (!StringUtils.isEmpty(queryMap.get("hasDept")) &&
                         "1".equals(queryMap.get("hasDept"))) {
                     predicates.add(criteriaBuilder.isNotNull(root.get("departmentId")));
-                }else if (!StringUtils.isEmpty(queryMap.get("hasDept"))&&
-                        "0".equals(queryMap.get("hasDept"))){
+                } else if (!StringUtils.isEmpty(queryMap.get("hasDept")) &&
+                        "0".equals(queryMap.get("hasDept"))) {
                     predicates.add(criteriaBuilder.isNull(root.get("departmentId")));
                 }
                 //部门id
@@ -105,7 +100,7 @@ public class UserServiceImpl implements IUserService {
                 return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
             }
         };
-        Page<User> userPage = userDao.findAll(specification,pageRequest);
+        Page<User> userPage = userDao.findAll(specification, pageRequest);
         return userPage;
     }
 
@@ -116,7 +111,7 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public User findById(String id) {
+    public User findById(String id) throws CommonException {
         return userDao.findById(id).get();
     }
 
@@ -127,7 +122,7 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public User insert(User user) {
+    public User insert(User user) throws CommonException {
 
         user.setId(idWorker.nextId() + "");
         user.setCreateTime(new Date());
@@ -145,7 +140,7 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public User updateById(String id, User user) {
+    public User updateById(String id, User user) throws CommonException {
         User queryCompany = userDao.findById(id).get();
         if (null == queryCompany) {
             throw new CommonException(ResultCode.E20001);
@@ -171,13 +166,14 @@ public class UserServiceImpl implements IUserService {
 
     /**
      * 分配角色
+     *
      * @param userId
      * @param roleIds
      */
     @Override
-    public void assignRoles(String userId, List<String> roleIds) {
+    public void assignRoles(String userId, List<String> roleIds) throws CommonException {
         User user = userDao.findById(userId).get();
-        Set<Role> roles=new HashSet<>();
+        Set<Role> roles = new HashSet<>();
         for (String roleId : roleIds) {
             Role role = roleDao.findById(roleId).get();
             roles.add(role);
@@ -193,11 +189,11 @@ public class UserServiceImpl implements IUserService {
      * @return
      */
     @Override
-    public Set<String> getUserRoles(String userId) {
+    public Set<String> getUserRoles(String userId) throws CommonException {
         User user = userDao.findById(userId).get();
         Set<Role> roles = user.getRoles();
         log.info("roles:{}", JSON.toJSONString(roles));
-        Set<String> roleIds =new HashSet<>();
+        Set<String> roleIds = new HashSet<>();
         for (Role role : roles) {
             roleIds.add(role.getId());
         }
@@ -210,64 +206,125 @@ public class UserServiceImpl implements IUserService {
      *
      * @param mobile
      * @param password
-     * @param companyId
-     * @param companyName
      * @return
      */
     @Override
-    public String login(String mobile, String password, String companyId, String companyName)throws CommonException {
-        User user = userDao.findUserByMobileAndPassword(mobile, password);
-        if (user==null){
+    public Serializable login(String mobile, String password) throws CommonException {
+        User user = userDao.findUserByMobileOrUsername(mobile, mobile);
+        if (user == null) {
             throw new CommonException(ResultCode.E10002);
         }
-        //使用jjwt创建令牌
-        SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretString));
-        Map<String, Object> claims=new HashMap<>();
-        claims.put("userId",user.getId());
-        claims.put("companyId",companyId);
-        claims.put("companyName",companyName);
-        String jws =Jwts.builder()
-                //.setIssuer("me")
-                //.setSubject("Bob")
-                //.setAudience("you")
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*30)) //a java.util.Date
-                //.setNotBefore(notBefore) //a java.util.Date
-                //.setIssuedAt(new Date()) // for example, now
-                //.setId(UUID.randomUUID()) //just an example id
-                .signWith(secretKey)
-                .addClaims(claims)
-                .compact();
-        return jws;
+
+        Subject currentUser = SecurityUtils.getSubject();
+
+        if (!currentUser.isAuthenticated()) {
+            //collect user principals and credentials in a gui specific manner
+            //such as username/password html form, X509 certificate, OpenID, etc.
+            //We'll use the username/password example here since it is the most common.
+            //(do you know what movie this is from? ;)
+            UsernamePasswordToken token = new UsernamePasswordToken(mobile, password);
+            //this is all you have to do to support 'remember me' (no config - built in!):
+            token.setRememberMe(false);
+            try {
+                currentUser.login(token);
+
+                //print their identifying principal (in this case, a username):
+                log.info( "User [" + currentUser.getPrincipal() + "] logged in successfully." );
+
+                //if no exception, that's it, we're done!
+                 return currentUser.getSession().getId();
+            } catch (AuthenticationException ae) {
+                //unexpected condition - error?
+                throw new CommonException(ResultCode.E10002);
+            }
+        }
+
+        return null;
     }
 
     /**
      * 根据用户id查询出权限和用户信息并封装
      *
-     * @param userId
+     * @param principal
      * @return
      */
     @Override
-    public ProfileResponse profile(String userId) {
-        User user = userDao.findById(userId).get();
-        if (user==null){
+    public ProfileResponse profile(String principal) throws CommonException {
+        User user = userDao.findUserByMobileOrUsername(principal,principal);
+        if (user == null) {
             throw new CommonException(ResultCode.UNAUTHENTICATED);
         }
-        ProfileResponse profileResponse =null;
-        if ("saasAdmin".equals(user.getLevel())){
+        ProfileResponse profileResponse = null;
+        if ("saasAdmin".equals(user.getLevel())) {
             //获取所有权限
             Permission permission = new Permission();
             List<Permission> permissions = iPermissionService.findAll(permission);
-            profileResponse=new ProfileResponse(user,permissions);
-        }else if ("coAdmin".equals(user.getLevel())){
+            profileResponse = new ProfileResponse(user, permissions);
+        } else if ("coAdmin".equals(user.getLevel())) {
             //获取企业可见的权限
             Permission permission = new Permission();
             permission.setEnVisible(1);
             List<Permission> permissions = iPermissionService.findAll(permission);
-            profileResponse=new ProfileResponse(user,permissions);
-        }else if ("user".equals(user.getLevel())){
-            profileResponse=new ProfileResponse(user);
+            profileResponse = new ProfileResponse(user, permissions);
+        } else if ("user".equals(user.getLevel())) {
+            profileResponse = new ProfileResponse(user);
         }
         return profileResponse;
+    }
+
+    /**
+     * 根据用户名获取角色名集合
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public Set<String> getRoleNamesForUser(String username) throws CommonException {
+        User user = userDao.findUserByMobileOrUsername(username, username);
+        if (null == user) {
+            throw new CommonException(ResultCode.E10003);
+        }
+        Set<String> roleNames = new HashSet<>();
+        for (Role role : user.getRoles()) {
+            roleNames.add(role.getName());
+        }
+        return roleNames;
+    }
+
+    /**
+     * 根据用户名获取用户权限代号集合
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public Set<String> getPermissions(String username) throws CommonException {
+        User user = userDao.findUserByMobileOrUsername(username, username);
+        if (null == user) {
+            throw new CommonException(ResultCode.E10003);
+        }
+        Set<String> permissions = new HashSet<>();
+        for (Role role : user.getRoles()) {
+            for (Permission permission : role.getPermissions()) {
+                permissions.add(permission.getCode());
+            }
+        }
+        return permissions;
+    }
+
+    /**
+     * 根据用户名获取密码
+     *
+     * @param username
+     * @return
+     */
+    @Override
+    public String findPasswordByMobileOrUsername(String username) throws CommonException {
+        User user = userDao.findUserByMobileOrUsername(username, username);
+        if (null == user) {
+            throw new CommonException(ResultCode.E10003);
+        }
+        return user.getPassword();
     }
 
 

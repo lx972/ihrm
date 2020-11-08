@@ -5,6 +5,7 @@ import cn.lx.ihrm.common.domain.system.response.ProfileResponse;
 import cn.lx.ihrm.common.exception.CommonException;
 import org.springframework.data.domain.Page;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,7 @@ public interface IUserService {
      * @param size
      * @return
      */
-    Page<User> findAll(Map<String, String> queryMap, int page, int size);
+    Page<User> findAll(Map<String, String> queryMap, int page, int size) throws CommonException;
 
     /**
      * 根据ID查询
@@ -33,7 +34,7 @@ public interface IUserService {
      * @param id
      * @return
      */
-    User findById(String id);
+    User findById(String id) throws CommonException;
 
     /**
      * 新增数据
@@ -41,7 +42,7 @@ public interface IUserService {
      * @param user
      * @return
      */
-    User insert(User user);
+    User insert(User user) throws CommonException;
 
     /**
      * 根据id修改数据
@@ -50,14 +51,14 @@ public interface IUserService {
      * @param user
      * @return
      */
-    User updateById(String id, User user);
+    User updateById(String id, User user) throws CommonException;
 
     /**
      * 根据id删除数据
      *
      * @param id
      */
-    void deleteById(String id);
+    void deleteById(String id) throws CommonException;
 
     /**
      * 分配角色
@@ -65,7 +66,7 @@ public interface IUserService {
      * @param userId
      * @param roleIds
      */
-    void assignRoles(String userId, List<String> roleIds);
+    void assignRoles(String userId, List<String> roleIds) throws CommonException;
 
     /**
      * 获取userId拥有的角色
@@ -73,23 +74,46 @@ public interface IUserService {
      * @param userId
      * @return
      */
-    Set<String> getUserRoles(String userId);
+    Set<String> getUserRoles(String userId) throws CommonException;
 
     /**
      * 用户登录
      *
      * @param mobile
      * @param password
-     * @param companyId
-     * @param companyName
      * @return
      */
-    String login(String mobile, String password, String companyId, String companyName) throws CommonException;
+    Serializable login(String mobile, String password) throws CommonException;
 
     /**
      * 根据用户id查询出权限和用户信息并封装
-     * @param userId
+     *
+     * @param principal
      * @return
      */
-    ProfileResponse profile(String userId);
+    ProfileResponse profile(String principal) throws CommonException;
+
+    /**
+     * 根据用户名获取角色名集合
+     *
+     * @param username
+     * @return
+     */
+    Set<String> getRoleNamesForUser(String username) throws CommonException;
+
+    /**
+     * 根据用户名获取用户权限代号集合
+     *
+     * @param username
+     * @return
+     */
+    Set<String> getPermissions(String username) throws CommonException;
+
+    /**
+     * 根据用户名获取密码
+     *
+     * @param username
+     * @return
+     */
+    String findPasswordByMobileOrUsername(String username) throws CommonException;
 }

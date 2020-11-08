@@ -27,8 +27,12 @@ spring:
           data-id: spring-boot-starter-druid.yaml
           group: COMMOM_GROUP
           refresh: true
+        -
+          data-id: ihrm-redis.yaml
+          group: IHRM_GROUP
+          refresh: true
 
-jjwt:
-  config:
-    secretString: nz6K2p5Ylf884nlH0BN3D1KJsd6Cbwtpmcp4HBAjIaU=
-
+shiro:
+  successUrl: /successUrl
+  unauthorizedUrl: /unauthorizedUrl?code=1
+  loginUrl: /unauthorizedUrl?code=2

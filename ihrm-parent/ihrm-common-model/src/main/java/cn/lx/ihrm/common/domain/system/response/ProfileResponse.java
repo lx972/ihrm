@@ -23,6 +23,11 @@ public class ProfileResponse {
     private String company;
     private Map roles;
 
+    /**
+     * 前端首页展示所需数据，包括权限
+     * 首页需要展示用户名，侧边栏菜单，这两项是必须的
+     * @param user
+     */
     public ProfileResponse(User user) {
         this.mobile = user.getMobile();
         this.username = user.getUsername();

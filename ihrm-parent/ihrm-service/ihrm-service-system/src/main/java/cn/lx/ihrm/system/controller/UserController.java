@@ -8,16 +8,16 @@ import cn.lx.ihrm.common.entity.PageResult;
 import cn.lx.ihrm.common.entity.Result;
 import cn.lx.ihrm.common.entity.ResultCode;
 import cn.lx.ihrm.common.exception.CommonException;
-import cn.lx.ihrm.common.utils.TokenUtil;
 import cn.lx.ihrm.system.service.IUserService;
-import io.jsonwebtoken.Claims;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.Set;
 
@@ -36,20 +36,12 @@ public class UserController extends BaseController {
     @Autowired
     private IUserService iUserService;
 
-    @Value(value = "${jjwt.config.secretString}")
-    private String secretString;
 
     @GetMapping(value = "/profile")
     public Result profile() {
-        String authorization = request.getHeader("Authorization");
-        if (StringUtils.isEmpty(authorization)) {
-            throw new CommonException(ResultCode.UNAUTHENTICATED);
-        }
-        String token = authorization.replace("Bearer ", "");
-        Claims claims = TokenUtil.decodeToken(token, secretString);
-        //String userId = "1063705482939731968";
-        String userId = (String) claims.get("userId");
-        ProfileResponse profileResponse = iUserService.profile(userId);
+        Subject subject = SecurityUtils.getSubject();
+        Object principal = subject.getPrincipal();
+        ProfileResponse profileResponse = iUserService.profile((String) principal);
         return new Result(ResultCode.SUCCESS, profileResponse);
     }
 
@@ -59,9 +51,15 @@ public class UserController extends BaseController {
                 || StringUtils.isEmpty(user.getPassword())) {
             throw new CommonException(ResultCode.E10001);
         }
-        String jws = iUserService.login(user.getMobile(), user.getPassword()
-                , getCompanyId(), getCompanyName());
-        return new Result(ResultCode.SUCCESS, jws);
+        Serializable sessionId = iUserService.login(user.getMobile(), user.getPassword());
+        return new Result(ResultCode.SUCCESS, sessionId);
+    }
+
+    @PostMapping(value = "/logout")
+    public Result logout() {
+        Subject subject = SecurityUtils.getSubject();
+        subject.logout();
+        return new Result(ResultCode.SUCCESS);
     }
 
 

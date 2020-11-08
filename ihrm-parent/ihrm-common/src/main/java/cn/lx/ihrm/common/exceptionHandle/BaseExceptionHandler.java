@@ -1,4 +1,4 @@
-package cn.lx.ihrm.company.exceptionHandle;
+package cn.lx.ihrm.common.exceptionHandle;
 
 import cn.lx.ihrm.common.entity.Result;
 import cn.lx.ihrm.common.exception.CommonException;
@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
- * cn.lx.ihrm.company.exceptionHandle
+ * cn.lx.ihrm.common.exceptionHandle
  *
  * @Author Administrator
  * @date 9:19
