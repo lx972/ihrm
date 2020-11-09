@@ -1,13 +1,13 @@
-package cn.lx.ihrm.system.config;
+package cn.lx.ihrm.company.config;
 
+import cn.lx.ihrm.common.Feign.UserFeign;
 import cn.lx.ihrm.common.shiro.CustomSessionManager;
 import cn.lx.ihrm.common.shiro.RedisCacheManager;
 import cn.lx.ihrm.common.shiro.RedisCacheSessionDAO;
 import cn.lx.ihrm.common.shiro.filter.MyFormAuthenticationFilter;
 import cn.lx.ihrm.common.shiro.filter.MyPermissionsAuthorizationFilter;
 import cn.lx.ihrm.common.shiro.filter.MyRolesAuthorizationFilter;
-import cn.lx.ihrm.system.realm.MyRealm;
-import cn.lx.ihrm.system.service.IUserService;
+import cn.lx.ihrm.company.realm.IhrmRealm;
 import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
@@ -38,24 +38,24 @@ public class ShiroConfig {
 
 
     @Autowired
-    private IUserService iUserService;
+    private UserFeign userFeign;
 
 
     /**
      * 注入自己的realm域
      */
    /*@Autowired
-   private MyRealm myRealm;*/
+   private IhrmRealm myRealm;*/
    @Bean
-   public MyRealm myRealm(){
-       MyRealm myRealm = new MyRealm();
-       myRealm.setIUserService(iUserService);
+   public IhrmRealm myRealm(){
+       IhrmRealm ihrmRealm = new IhrmRealm();
+       ihrmRealm.setUserFeign(userFeign);
        //设置缓存管理器
-       myRealm.setCacheManager(redisCacheManager);
+       ihrmRealm.setCacheManager(redisCacheManager);
        //设置启用缓存
-       myRealm.setAuthenticationCachingEnabled(true);
-       myRealm.setAuthorizationCachingEnabled(true);
-       return myRealm;
+       ihrmRealm.setAuthenticationCachingEnabled(true);
+       ihrmRealm.setAuthorizationCachingEnabled(true);
+       return ihrmRealm;
    }
 
     /**
@@ -130,6 +130,7 @@ public class ShiroConfig {
 
 
 
+
     /**
      * 路径映射到给定的过滤器，以允许不同的路径具有不同的访问级别
      * 这个我们也需要覆盖springboot的自动配置
@@ -139,11 +140,11 @@ public class ShiroConfig {
     public ShiroFilterChainDefinition shiroFilterChainDefinition() {
         DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
         //匿名访问
-        chainDefinition.addPathDefinition("/user/login", "anon");
+        //chainDefinition.addPathDefinition("/user/login", "anon");
         chainDefinition.addPathDefinition("/unauthorizedUrl", "anon");
         chainDefinition.addPathDefinition("/successUrl", "anon");
         //登出的url
-        chainDefinition.addPathDefinition("/user/logout", "logout");
+        //chainDefinition.addPathDefinition("/user/logout", "logout");
         //其他所有路径全部需要认证
         chainDefinition.addPathDefinition("/**", "authc");
         return chainDefinition;

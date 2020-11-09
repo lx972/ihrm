@@ -1,4 +1,4 @@
-package cn.lx.ihrm.system.util;
+package cn.lx.ihrm.common.utils;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;

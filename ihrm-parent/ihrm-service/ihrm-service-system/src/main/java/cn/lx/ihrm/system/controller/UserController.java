@@ -37,6 +37,22 @@ public class UserController extends BaseController {
     private IUserService iUserService;
 
 
+    @GetMapping(value = "/getRoleNames")
+    public Result getRoleNames() {
+        Subject subject = SecurityUtils.getSubject();
+        Object principal = subject.getPrincipal();
+        Set<String> roleNames = iUserService.getRoleNamesForUser((String) principal);
+        return new Result(ResultCode.SUCCESS, roleNames);
+    }
+
+    @GetMapping(value = "/getPermissions")
+    public Result getPermissions() {
+        Subject subject = SecurityUtils.getSubject();
+        Object principal = subject.getPrincipal();
+        Set<String> permissions = iUserService.getPermissions((String) principal);
+        return new Result(ResultCode.SUCCESS, permissions);
+    }
+
     @GetMapping(value = "/profile")
     public Result profile() {
         Subject subject = SecurityUtils.getSubject();

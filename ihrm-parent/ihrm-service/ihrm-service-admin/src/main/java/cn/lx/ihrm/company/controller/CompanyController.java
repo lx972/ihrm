@@ -1,10 +1,12 @@
 package cn.lx.ihrm.company.controller;
 
+import cn.lx.ihrm.common.Feign.UserFeign;
 import cn.lx.ihrm.common.controller.BaseController;
 import cn.lx.ihrm.common.domain.company.Company;
 import cn.lx.ihrm.common.entity.Result;
 import cn.lx.ihrm.common.entity.ResultCode;
 import cn.lx.ihrm.company.service.ICompanyService;
+import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,7 +26,18 @@ public class CompanyController extends BaseController {
     @Autowired
     private ICompanyService iCompanyService;
 
+    @Autowired
+    private UserFeign userFeign;
+
+
+    @GetMapping(value = "/test")
+    public Result test(){
+        Result roleNames = userFeign.getRoleNames();
+        return new Result(ResultCode.SUCCESS,roleNames);
+    }
+
     @GetMapping(value = "")
+    @RequiresRoles(value = "admin")
     public Result findAll(){
         List<Company> companies=iCompanyService.findAll();
         return new Result(ResultCode.SUCCESS,companies);

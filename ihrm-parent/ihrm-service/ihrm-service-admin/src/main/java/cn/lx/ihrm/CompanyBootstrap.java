@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
 /**
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EntityScan(basePackages = "cn.lx.ihrm.common.domain.company")
+@EnableFeignClients(basePackages = {"cn.lx.ihrm.common.Feign"})
 public class CompanyBootstrap {
 
     public static void main(String[] args) {

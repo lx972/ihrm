@@ -17,9 +17,10 @@
             <artifactId>ihrm-common</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
         <dependency>
             <groupId>cn.lx.ihrm</groupId>
-            <artifactId>ihrm-common-model</artifactId>
+            <artifactId>ihrm-common-system-model</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 

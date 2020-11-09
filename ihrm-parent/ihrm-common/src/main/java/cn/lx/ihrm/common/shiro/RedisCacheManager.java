@@ -1,4 +1,4 @@
-package cn.lx.ihrm.system.config;
+package cn.lx.ihrm.common.shiro;
 
 import lombok.Setter;
 import org.apache.shiro.cache.AbstractCacheManager;

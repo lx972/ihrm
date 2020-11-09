@@ -4,7 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ihrm.iml" filepath="$PROJECT_DIR$/.idea/ihrm.iml" />
       <module fileurl="file://$PROJECT_DIR$/ihrm-parent/ihrm-common/ihrm-common.iml" filepath="$PROJECT_DIR$/ihrm-parent/ihrm-common/ihrm-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ihrm-parent/ihrm-common-model/ihrm-common-company-model/ihrm-common-company-model.iml" filepath="$PROJECT_DIR$/ihrm-parent/ihrm-common-model/ihrm-common-company-model/ihrm-common-company-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/ihrm-parent/ihrm-common-model/ihrm-common-model.iml" filepath="$PROJECT_DIR$/ihrm-parent/ihrm-common-model/ihrm-common-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ihrm-parent/ihrm-common-model/ihrm-common-system-model/ihrm-common-system-model.iml" filepath="$PROJECT_DIR$/ihrm-parent/ihrm-common-model/ihrm-common-system-model/ihrm-common-system-model.iml" />
       <module fileurl="file://$PROJECT_DIR$/ihrm-parent/ihrm-parent.iml" filepath="$PROJECT_DIR$/ihrm-parent/ihrm-parent.iml" />
       <module fileurl="file://$PROJECT_DIR$/ihrm-parent/ihrm-service/ihrm-service.iml" filepath="$PROJECT_DIR$/ihrm-parent/ihrm-service/ihrm-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/ihrm-parent/ihrm-service/ihrm-service-admin/ihrm-service-admin.iml" filepath="$PROJECT_DIR$/ihrm-parent/ihrm-service/ihrm-service-admin/ihrm-service-admin.iml" />

@@ -1,6 +1,6 @@
-package cn.lx.ihrm.system.config;
+package cn.lx.ihrm.common.shiro;
 
-import cn.lx.ihrm.system.util.ApplicationContextUtils;
+import cn.lx.ihrm.common.utils.ApplicationContextUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;
@@ -39,7 +39,7 @@ public class RedisCache<K, V> implements Cache<K, V> , Destroyable {
     @Override
     public V get(K k) throws CacheException {
         RedisTemplate<K, V> redisTemplate = (RedisTemplate<K, V>) ApplicationContextUtils.getBean("redisTemplate");
-        log.info("RedisCache:get");
+        log.info("RedisCache:get,k:{}",name+":"+k);
         return (V) redisTemplate.opsForValue().get(name+":"+k);
     }
 
@@ -48,7 +48,7 @@ public class RedisCache<K, V> implements Cache<K, V> , Destroyable {
         RedisTemplate<String, V> redisTemplate = (RedisTemplate<String, V>) ApplicationContextUtils.getBean("redisTemplate");;
         //redisTemplate.boundHashOps(name).expire(3, TimeUnit.SECONDS);
         //redisTemplate.boundHashOps(name).put(k, v);
-        log.info("RedisCache:put");
+        log.info("RedisCache:put,k:{},v:{}",name+":"+k,v);
         redisTemplate.opsForValue().set(name+":"+k,v,10,TimeUnit.MINUTES);
         return null;
     }
@@ -57,6 +57,7 @@ public class RedisCache<K, V> implements Cache<K, V> , Destroyable {
     public V remove(K k) throws CacheException {
         RedisTemplate redisTemplate = (RedisTemplate<K, V>) ApplicationContextUtils.getBean("redisTemplate");;
         //redisTemplate.boundHashOps(name).delete(k);
+        log.info("RedisCache:remove,k:{}",name+":"+k);
         redisTemplate.delete(name+":"+k);
         return null;
     }
@@ -66,15 +67,16 @@ public class RedisCache<K, V> implements Cache<K, V> , Destroyable {
         RedisTemplate redisTemplate = (RedisTemplate<K, V>) ApplicationContextUtils.getBean("redisTemplate");;
         //Set keys = redisTemplate.boundHashOps(name).keys();
         //redisTemplate.boundHashOps(name).delete(keys);
-
-        redisTemplate.delete( keys());
+        log.info("RedisCache:clear,keys:{}",keys());
+        redisTemplate.delete(keys());
     }
 
     @Override
     public int size() {
         //RedisTemplate redisTemplate = (RedisTemplate<K, V>) ApplicationContextUtils.getBean("redisTemplate");;
         //return redisTemplate.boundHashOps(name).size().intValue();
-        return keys() .size();
+        log.info("RedisCache:clear,size:{}",keys().size());
+        return keys().size();
     }
 
     @Override
@@ -110,6 +112,7 @@ public class RedisCache<K, V> implements Cache<K, V> , Destroyable {
         RedisTemplate redisTemplate = (RedisTemplate<K, V>) ApplicationContextUtils.getBean("redisTemplate");;
         //List values = redisTemplate.boundHashOps(name).values();
         List values = redisTemplate.opsForValue().multiGet(keys());
+        log.info("RedisCache:clear,values:{}",values);
         return (Collection)(!values.isEmpty() ? Collections.unmodifiableCollection(values) : Collections.emptyList());
 
     }

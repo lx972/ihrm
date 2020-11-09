@@ -7,15 +7,18 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ihrm-common" />
-        <module name="ihrm-common-model" />
-        <module name="ihrm-service-system" />
         <module name="ihrm-service-admin" />
+        <module name="ihrm-service-system" />
+        <module name="ihrm-common" />
+        <module name="ihrm-common-company-model" />
+        <module name="ihrm-common-system-model" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="ihrm-common" target="1.8" />
+      <module name="ihrm-common-company-model" target="1.8" />
       <module name="ihrm-common-model" target="1.8" />
+      <module name="ihrm-common-system-model" target="1.8" />
       <module name="ihrm-parent" target="1.8" />
       <module name="ihrm-service" target="1.8" />
       <module name="ihrm-service-admin" target="1.8" />
@@ -27,7 +30,9 @@
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ihrm-common" options="-parameters" />
+      <module name="ihrm-common-company-model" options="-parameters" />
       <module name="ihrm-common-model" options="-parameters" />
+      <module name="ihrm-common-system-model" options="-parameters" />
       <module name="ihrm-parent" options="-parameters" />
       <module name="ihrm-service" options="-parameters" />
       <module name="ihrm-service-admin" options="-parameters" />

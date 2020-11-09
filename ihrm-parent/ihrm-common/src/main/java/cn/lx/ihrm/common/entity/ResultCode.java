@@ -9,6 +9,8 @@ public enum ResultCode {
     UNAUTHORISE(false,10003,"权限不足"),
     SERVER_ERROR(false,99999,"抱歉，系统繁忙，请稍后重试！"),
     JWT_ERROR(false,88888,"令牌不正确！"),
+    LOGIN_SUCCESS(true,10004,"登录成功！"),
+    LOGIN_FAIL(false,10005,"登录失败！"),
 
     //---用户操作返回码----
     E10001(false,10001,"用户名或密码不能为空"),

@@ -2,7 +2,7 @@ server:
   port: 57020
 spring:
   application:
-    name: service-system
+    name: system
   cloud:
     nacos:
       discovery:
@@ -31,8 +31,7 @@ spring:
           data-id: ihrm-redis.yaml
           group: IHRM_GROUP
           refresh: true
-
-shiro:
-  successUrl: /successUrl
-  unauthorizedUrl: /unauthorizedUrl?code=1
-  loginUrl: /unauthorizedUrl?code=2
+        -
+          data-id: ihrm-shiro.yaml
+          group: IHRM_GROUP
+          refresh: true
