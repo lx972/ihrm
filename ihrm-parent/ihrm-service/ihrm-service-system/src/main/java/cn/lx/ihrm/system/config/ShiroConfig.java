@@ -9,7 +9,9 @@ import cn.lx.ihrm.common.shiro.filter.MyRolesAuthorizationFilter;
 import cn.lx.ihrm.system.realm.MyRealm;
 import cn.lx.ihrm.system.service.IUserService;
 import org.apache.shiro.mgt.SessionsSecurityManager;
+import org.apache.shiro.session.mgt.SessionFactory;
 import org.apache.shiro.session.mgt.SessionManager;
+import org.apache.shiro.session.mgt.SessionValidationScheduler;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
@@ -87,6 +89,10 @@ public class ShiroConfig {
    }
 
 
+   @Autowired
+   private SessionFactory sessionFactory;
+
+
     /**
      * 配置一个session管理器
      * @return
@@ -97,6 +103,10 @@ public class ShiroConfig {
         sessionManager.setSessionDAO(redisCacheSessionDAO);
         sessionManager.setSessionIdCookieEnabled(false);
         sessionManager.setSessionIdUrlRewritingEnabled(false);
+        //设置自定义session构建工厂
+        sessionManager.setSessionFactory(sessionFactory);
+        //设置session失效验证的调度器的间隔时间
+        sessionManager.setSessionValidationInterval(1000);
         return sessionManager;
     }
 

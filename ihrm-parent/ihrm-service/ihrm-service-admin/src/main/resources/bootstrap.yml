@@ -31,9 +31,5 @@ spring:
           data-id: ihrm-redis.yaml
           group: IHRM_GROUP
           refresh: true
-        -
-          data-id: ihrm-shiro.yaml
-          group: IHRM_GROUP
-          refresh: true
 
 

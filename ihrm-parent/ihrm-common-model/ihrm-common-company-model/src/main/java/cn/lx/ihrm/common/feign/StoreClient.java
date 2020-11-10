@@ -1,4 +1,4 @@
-package cn.lx.ihrm.common.Feign;
+package cn.lx.ihrm.common.feign;
 
 import org.bouncycastle.util.Store;
 import org.springframework.cloud.openfeign.FeignClient;

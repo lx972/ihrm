@@ -3,34 +3,30 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>ihrm-parent</artifactId>
+        <artifactId>ihrm-service</artifactId>
         <groupId>cn.lx.ihrm</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ihrm-common-model</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>ihrm-common-system-model</module>
-        <module>ihrm-common-company-model</module>
-        <module>ihrm-common-employee-model</module>
-    </modules>
+    <artifactId>ihrm-service-employee</artifactId>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <groupId>cn.lx.ihrm</groupId>
+            <artifactId>ihrm-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>cn.lx.ihrm</groupId>
-            <artifactId>ihrm-common</artifactId>
+            <artifactId>ihrm-common-system-model</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.lx.ihrm</groupId>
+            <artifactId>ihrm-common-employee-model</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

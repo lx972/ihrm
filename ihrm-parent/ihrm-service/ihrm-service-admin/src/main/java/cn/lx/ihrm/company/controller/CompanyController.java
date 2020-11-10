@@ -1,6 +1,6 @@
 package cn.lx.ihrm.company.controller;
 
-import cn.lx.ihrm.common.Feign.UserFeign;
+import cn.lx.ihrm.common.feign.UserFeign;
 import cn.lx.ihrm.common.controller.BaseController;
 import cn.lx.ihrm.common.domain.company.Company;
 import cn.lx.ihrm.common.entity.Result;

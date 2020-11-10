@@ -1,4 +1,4 @@
-package cn.lx.ihrm.company.config;
+package cn.lx.ihrm.common.redis;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

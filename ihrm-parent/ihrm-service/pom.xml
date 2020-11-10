@@ -14,6 +14,7 @@
     <modules>
         <module>ihrm-service-admin</module>
         <module>ihrm-service-system</module>
+        <module>ihrm-service-employee</module>
     </modules>
 
     <dependencies>

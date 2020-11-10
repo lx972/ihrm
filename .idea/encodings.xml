@@ -5,9 +5,11 @@
     <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-common" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-common-model" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-common-model/ihrm-common-company-model" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-common-model/ihrm-common-employee-model" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-common-model/ihrm-common-system-model" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-service" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-service/ihrm-service-admin" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-service/ihrm-service-employee" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/ihrm-parent/ihrm-service/ihrm-service-system" charset="UTF-8" />
   </component>
 </project>

@@ -16,12 +16,12 @@ import org.springframework.context.annotation.Bean;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-@EntityScan(basePackages = "cn.lx.ihrm.common.domain.company")
+@EntityScan(basePackages = "cn.lx.ihrm.common.domain.employee")
 @EnableFeignClients(basePackages = {"cn.lx.ihrm.common.feign"})
-public class CompanyBootstrap {
+public class EmployeeBootstrap {
 
     public static void main(String[] args) {
-        SpringApplication.run(CompanyBootstrap.class, args);
+        SpringApplication.run(EmployeeBootstrap.class, args);
     }
 
     @Bean

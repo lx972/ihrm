@@ -1,4 +1,4 @@
-package cn.lx.ihrm.company.config;
+package cn.lx.ihrm.employee.config;
 
 import cn.lx.ihrm.common.feign.UserFeign;
 import cn.lx.ihrm.common.shiro.CustomSessionManager;
@@ -7,7 +7,7 @@ import cn.lx.ihrm.common.shiro.RedisCacheSessionDAO;
 import cn.lx.ihrm.common.shiro.filter.MyFormAuthenticationFilter;
 import cn.lx.ihrm.common.shiro.filter.MyPermissionsAuthorizationFilter;
 import cn.lx.ihrm.common.shiro.filter.MyRolesAuthorizationFilter;
-import cn.lx.ihrm.company.realm.IhrmRealm;
+import cn.lx.ihrm.employee.realm.IhrmRealm;
 import org.apache.shiro.mgt.SessionsSecurityManager;
 import org.apache.shiro.session.mgt.SessionFactory;
 import org.apache.shiro.session.mgt.SessionManager;

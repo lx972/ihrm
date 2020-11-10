@@ -1,4 +1,4 @@
-package cn.lx.ihrm.common.Feign;
+package cn.lx.ihrm.common.feign;
 
 import cn.lx.ihrm.common.entity.Result;
 import org.springframework.cloud.openfeign.FeignClient;
