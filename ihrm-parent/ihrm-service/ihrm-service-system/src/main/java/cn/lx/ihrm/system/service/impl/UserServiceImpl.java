@@ -27,6 +27,7 @@ import org.apache.shiro.subject.Subject;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -41,6 +42,7 @@ import javax.persistence.criteria.Root;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URLEncoder;
@@ -459,7 +461,8 @@ public class UserServiceImpl implements IUserService {
         log.info("导出" + month + "月份的员工：{}个", userList.size());
 
         //创建表格，并输出
-        createXLSX(month, response, userList);
+        //createXLSX1(month, response, userList);
+        createXLSX2(month, response, userList);
     }
 
     /**
@@ -469,7 +472,84 @@ public class UserServiceImpl implements IUserService {
      * @param response
      * @param userList
      */
-    private void createXLSX(String month, HttpServletResponse response, List<User> userList) {
+    private void createXLSX2(String month, HttpServletResponse response, List<User> userList) {
+        ClassPathResource classPathResource = new ClassPathResource("templates.xlsx");
+
+        XSSFWorkbook workbook = null;
+        try {
+            workbook = new XSSFWorkbook(classPathResource.getInputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        XSSFSheet sheet = workbook.getSheetAt(0);
+        XSSFRow row = sheet.getRow(0);
+
+        //单元格样式
+        XSSFCellStyle[] cellStyle=new XSSFCellStyle[row.getLastCellNum()+1];
+        for (int i = 0; i < row.getLastCellNum(); i++) {
+            cellStyle[i] = row.getCell(i).getCellStyle();
+        }
+
+        //表内容
+        User user = null;
+        for (int i =0; i < userList.size(); i++) {
+            XSSFRow content = sheet.createRow(i+1);
+            user = userList.get(i);
+            XSSFCell cell0 = content.createCell(0);
+            cell0.setCellValue(user.getUsername());
+            cell0.setCellStyle(cellStyle[0]);
+
+            XSSFCell cell1 = content.createCell(1);
+            cell1.setCellValue(user.getMobile());
+            cell1.setCellStyle(cellStyle[1]);
+
+            XSSFCell cell2 = content.createCell(2);
+            cell2.setCellValue(user.getWorkNumber());
+            cell2.setCellStyle(cellStyle[2]);
+
+            XSSFCell cell3 = content.createCell(3);
+            cell3.setCellValue(user.getFormOfEmployment());
+            cell3.setCellStyle(cellStyle[3]);
+
+            XSSFCell cell4 = content.createCell(4);
+            cell4.setCellValue(new SimpleDateFormat("yyyy-MM-dd").format(user.getTimeOfEntry()));
+            cell4.setCellStyle(cellStyle[4]);
+
+            Result departmentFeignResult = departmentFeign.findById(user.getDepartmentId());
+            if (departmentFeignResult.isSuccess() == false || departmentFeignResult.getData() == null) {
+                throw new CommonException(ResultCode.E20002);
+            }
+            Department department = JSON.parseObject(JSON.toJSONString(departmentFeignResult.getData()), Department.class);
+            XSSFCell cell5 = content.createCell(5);
+            cell5.setCellValue(department.getCode());
+            cell5.setCellStyle(cellStyle[5]);
+        }
+        try {
+            String fileName = URLEncoder.encode(month + "月员工信息表.xlsx",
+                    "UTF-8");
+            response.setContentType("application/octet-stream");
+            response.addHeader("content-disposition",
+                    "attachment;filename=" +
+                            new String(fileName.getBytes(Charset.defaultCharset()),"ISO8859-1"));
+            response.addHeader("fileName", fileName);
+            ServletOutputStream outputStream = response.getOutputStream();
+            workbook.write(outputStream);
+
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            throw new CommonException(ResultCode.SERVER_ERROR);
+        }
+    }
+
+
+    /**
+     * 创建表格，并输出
+     *
+     * @param month
+     * @param response
+     * @param userList
+     */
+    private void createXLSX1(String month, HttpServletResponse response, List<User> userList) {
         XSSFWorkbook workbook = new XSSFWorkbook();
         XSSFSheet sheet = workbook.createSheet();
         //单元格样式
