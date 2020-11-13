@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface UserFeign {
 
     @GetMapping(value = "/getRoleNames")
-    public Result getRoleNames();
+    Result getRoleNames();
 
     @GetMapping(value = "/getPermissions")
-    public Result getPermissions();
+    Result getPermissions();
 }

@@ -29,6 +29,15 @@ public class DepartmentController extends BaseController {
     @Autowired
     private ICompanyService iCompanyService;
 
+    @GetMapping(value = "/companyId/{companyId}/code/{code}")
+    public Result findByCompanyIdAndCode(@PathVariable("companyId")String companyId,
+                                         @PathVariable("code")String code ){
+
+        Department department=iDepartmentService.findByCompanyIdAndCode(companyId, code);
+
+        return new Result(ResultCode.SUCCESS,department);
+    }
+
     @GetMapping(value = "")
     public Result findAll(){
         //查询所有部门，形成树结构

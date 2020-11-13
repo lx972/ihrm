@@ -49,4 +49,12 @@ public interface IDepartmentService {
      * @param id
      */
     void deleteById(String id);
+
+    /**
+     * 根据企业id和部门代码查找部门详细信息
+     * @param companyId
+     * @param code
+     * @return
+     */
+    Department findByCompanyIdAndCode(String companyId, String code);
 }

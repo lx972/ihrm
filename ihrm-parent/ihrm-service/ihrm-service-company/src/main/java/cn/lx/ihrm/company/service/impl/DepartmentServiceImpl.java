@@ -137,4 +137,35 @@ public class DepartmentServiceImpl implements IDepartmentService {
     public void deleteById(String id) {
        departmentDao.deleteById(id);
     }
+
+    /**
+     * 根据企业id和部门代码查找部门详细信息
+     *
+     * @param companyId
+     * @param code
+     * @return
+     */
+    @Override
+    public Department findByCompanyIdAndCode(String companyId, String code) {
+        Specification<Department> specification = new Specification<Department>() {
+            /**
+             * Creates a WHERE clause for a query of the referenced entity in form of a {@link Predicate} for the given
+             * {@link Root} and {@link CriteriaQuery}.
+             *
+             * @param root            must not be {@literal null}.
+             * @param query           must not be {@literal null}.
+             * @param criteriaBuilder must not be {@literal null}.
+             * @return a {@link Predicate}, may be {@literal null}.
+             */
+            @Override
+            public Predicate toPredicate(Root<Department> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                Predicate predicate1 = criteriaBuilder.equal(root.get("companyId").as(String.class), companyId);
+                Predicate predicate2 = criteriaBuilder.equal(root.get("code").as(String.class), code);
+                return criteriaBuilder.and(predicate1,predicate2);
+
+            }
+        };
+        Department department = departmentDao.findOne(specification).get();
+        return department;
+    }
 }

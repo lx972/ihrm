@@ -9,6 +9,7 @@ import cn.lx.ihrm.common.entity.Result;
 import cn.lx.ihrm.common.entity.ResultCode;
 import cn.lx.ihrm.common.exception.CommonException;
 import cn.lx.ihrm.system.service.IUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -31,11 +33,23 @@ import java.util.Set;
 @CrossOrigin
 @RequestMapping("/user")
 @RefreshScope
+@Slf4j
 public class UserController extends BaseController {
 
     @Autowired
     private IUserService iUserService;
 
+
+    @GetMapping(value = "/export/{month}")
+    public void export(@PathVariable("month")String month) {
+        iUserService.export(month,getCompanyId(),response);
+    }
+
+    @PostMapping(value = "/import")
+    public Result importExcel(@RequestParam("file") MultipartFile file) {
+        iUserService.importExcel(file,getCompanyId(),getCompanyName());
+        return new Result(ResultCode.SUCCESS);
+    }
 
     @GetMapping(value = "/getRoleNames")
     public Result getRoleNames() {

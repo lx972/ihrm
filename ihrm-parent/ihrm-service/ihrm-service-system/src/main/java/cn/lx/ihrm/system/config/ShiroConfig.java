@@ -106,7 +106,7 @@ public class ShiroConfig {
         //设置自定义session构建工厂
         sessionManager.setSessionFactory(sessionFactory);
         //设置session失效验证的调度器的间隔时间
-        sessionManager.setSessionValidationInterval(1000);
+        //sessionManager.setSessionValidationInterval(1000);
         return sessionManager;
     }
 
@@ -150,8 +150,7 @@ public class ShiroConfig {
         DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
         //匿名访问
         chainDefinition.addPathDefinition("/user/login", "anon");
-        chainDefinition.addPathDefinition("/unauthorizedUrl", "anon");
-        chainDefinition.addPathDefinition("/successUrl", "anon");
+        chainDefinition.addPathDefinition("/user/export/**", "anon");
         //登出的url
         chainDefinition.addPathDefinition("/user/logout", "logout");
         //其他所有路径全部需要认证

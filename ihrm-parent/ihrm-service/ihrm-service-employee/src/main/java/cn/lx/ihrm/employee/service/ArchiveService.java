@@ -72,7 +72,7 @@ public class ArchiveService {
                 if (searchMap.get("year")!=null && !"".equals(searchMap.get("year"))) {
                     predicateList.add(cb.like(root.get("mouth").as(String.class), (String)searchMap.get("year")));
                 }
-                return cb.and(predicateList.toArray(new Predicate[predicateList.size()]));
+                return cb.and(predicateList.toArray(new Predicate[0]));
             }
         };
     }

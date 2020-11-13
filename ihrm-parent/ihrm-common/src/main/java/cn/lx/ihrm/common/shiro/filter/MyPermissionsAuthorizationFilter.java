@@ -7,6 +7,7 @@ import org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**

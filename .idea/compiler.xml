@@ -7,11 +7,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="ihrm-service-company" />
         <module name="ihrm-common-company-model" />
         <module name="ihrm-common-employee-model" />
         <module name="ihrm-common" />
         <module name="ihrm-service-employee" />
-        <module name="ihrm-service-admin" />
         <module name="ihrm-common-system-model" />
         <module name="ihrm-service-system" />
       </profile>
@@ -24,7 +24,7 @@
       <module name="ihrm-common-system-model" target="1.8" />
       <module name="ihrm-parent" target="1.8" />
       <module name="ihrm-service" target="1.8" />
-      <module name="ihrm-service-admin" target="1.8" />
+      <module name="ihrm-service-company" target="1.8" />
       <module name="ihrm-service-employee" target="1.8" />
       <module name="ihrm-service-system" target="1.8" />
       <module name="ihrm-service-uaa" target="1.8" />
@@ -40,7 +40,7 @@
       <module name="ihrm-common-system-model" options="-parameters" />
       <module name="ihrm-parent" options="-parameters" />
       <module name="ihrm-service" options="-parameters" />
-      <module name="ihrm-service-admin" options="-parameters" />
+      <module name="ihrm-service-company" options="-parameters" />
       <module name="ihrm-service-employee" options="-parameters" />
       <module name="ihrm-service-system" options="-parameters" />
       <module name="ihrm-service-uaa" options="-parameters" />

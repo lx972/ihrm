@@ -4,6 +4,8 @@ import cn.lx.ihrm.common.domain.system.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.List;
+
 /**
  * cn.lx.ihrm.system.dao
  * JpaRepository<Company,String>中有两个泛型，第一个是指操作的对象，对象中必须有和
@@ -16,4 +18,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 public interface UserDao extends JpaRepository<User, String>, JpaSpecificationExecutor<User> {
 
     User findUserByMobileOrUsername(String mobile,String username);
+
 }

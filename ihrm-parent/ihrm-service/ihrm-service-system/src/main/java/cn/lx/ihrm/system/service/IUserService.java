@@ -4,7 +4,9 @@ import cn.lx.ihrm.common.domain.system.User;
 import cn.lx.ihrm.common.domain.system.response.ProfileResponse;
 import cn.lx.ihrm.common.exception.CommonException;
 import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -116,4 +118,21 @@ public interface IUserService {
      * @return
      */
     String findPasswordByMobileOrUsername(String username) throws CommonException;
+
+    /**
+     * 员工批量导入
+     *
+     * @param file
+     * @param companyId
+     * @param companyName
+     */
+    void importExcel(MultipartFile file, String companyId, String companyName)throws CommonException ;
+
+    /**
+     * 导出当月员工表
+     * @param month
+     * @param companyId
+     * @param response
+     */
+    void export(String month, String companyId, HttpServletResponse response)throws CommonException ;
 }
