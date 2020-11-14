@@ -47,7 +47,7 @@ public class UserController extends BaseController {
 
     @PostMapping(value = "/import")
     public Result importExcel(@RequestParam("file") MultipartFile file) {
-        iUserService.importExcel(file,getCompanyId(),getCompanyName());
+        iUserService.importExcel2(file,getCompanyId(),getCompanyName());
         return new Result(ResultCode.SUCCESS);
     }
 

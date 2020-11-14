@@ -126,13 +126,25 @@ public interface IUserService {
      * @param companyId
      * @param companyName
      */
-    void importExcel(MultipartFile file, String companyId, String companyName)throws CommonException ;
+    void importExcel1(MultipartFile file, String companyId, String companyName) throws CommonException;
+
+
+    /**
+     * 员工批量导入（可承受百万级别）
+     *
+     * @param file
+     * @param companyId
+     * @param companyName
+     * @throws CommonException
+     */
+    void importExcel2(MultipartFile file, String companyId, String companyName) throws CommonException;
 
     /**
      * 导出当月员工表
+     *
      * @param month
      * @param companyId
      * @param response
      */
-    void export(String month, String companyId, HttpServletResponse response)throws CommonException ;
+    void export(String month, String companyId, HttpServletResponse response) throws CommonException;
 }
